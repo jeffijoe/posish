@@ -23,12 +23,10 @@ const buttonBase = css`
 const themes = {
   light: css`
     box-shadow: 0 2px 2px rgba(50, 60, 70, 0.2);
-    background-color: #2395f3;
     color: #fff;
   `,
   dark: css`
     box-shadow: 0 2px 2px rgba(50, 60, 70, 0.2);
-    background-color: #4A148C;
     color: #fff;
   `
 }
@@ -40,6 +38,7 @@ type Props = LinkProps & {
 const Button = withTheme(styled(Link)`
   ${buttonBase};
   ${(p: Props) => themes[p.theme.id] || themes.light};
+  background-color: ${(p: Props) => p.theme.primaryColor};
 `)
 
 export default Button

@@ -30,7 +30,7 @@ class App extends React.Component<Props> {
       case rootStore.workspaceStore:
         return <Workspace workspaceStore={rootStore.workspaceStore} />
       default:
-        return <Homepage />
+        return <Homepage rootStore={rootStore} />
     }
   }
 

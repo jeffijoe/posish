@@ -1746,6 +1746,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   dependencies:
     cssom "0.3.x"
 
+csx@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/csx/-/csx-8.4.0.tgz#46df8d2a5174a0fa6c6a7b172965411c370cc0df"
+
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"

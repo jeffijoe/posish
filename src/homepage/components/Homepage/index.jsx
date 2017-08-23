@@ -1,11 +1,14 @@
+// @flow
 import * as React from 'react'
 import styled from 'emotion/react'
 import { observer } from 'inferno-mobx'
-import Button from 'components/Button'
+import Button from '../../../components/Button'
+import Header from '../../../components/Header'
+import type { RootStore } from '../../../root-store'
 
 const Container = styled('div')`
   padding: 20px;
-  padding-top: 7%;
+  padding-top: 10%;
   max-width: 768px;
   margin: 0 auto;
 `
@@ -27,9 +30,14 @@ const Content = styled('div')`
   }
 `
 
-const Homepage = () => {
+export type Props = {
+  rootStore: RootStore;
+}
+
+const Homepage = ({ rootStore }: Props) => {
   return (
     <Container>
+      <Header rootStore={rootStore} />
       <Title>Posish</Title>
       <Content>
         <p>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "csx": "^8.4.0",
     "director": "^1.2.8",
     "emotion": "^7.2.0",
     "inferno": "^3.7.1",
