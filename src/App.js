@@ -3,6 +3,7 @@ import * as React from 'react'
 import Homepage from './homepage/components/Homepage'
 import Workspace from './workspace/components/Workspace'
 import { Provider, observer } from 'inferno-mobx'
+import Header from './components/Header'
 import type { RootStore } from './root-store'
 import { BodyClass } from './components/ClassName'
 import { css } from 'emotion'
@@ -39,7 +40,10 @@ class App extends React.Component<Props> {
     return (
       <Provider rootStore={this.props.rootStore}>
         <BodyClass className={themeStyles[this.props.rootStore.themeStore.theme.id]}>
-          {this.renderCurrentView(currentView)}
+          <div>
+            <Header rootStore={this.props.rootStore} />
+            {this.renderCurrentView(currentView)}
+          </div>
         </BodyClass>
       </Provider>
     )

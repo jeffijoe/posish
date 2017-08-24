@@ -163,6 +163,8 @@ declare module 'libx' {
     forEach (iteratee: Iteratee<T, any>): Collection<T>;
   }
 
+  declare function collection<T> (opts: CollectionOptions<T>): Collection<T>;
+
   declare type ModelCollectionOptions<TModel> = CollectionOptions<TModel> & {
     model: Class<TModel>;
     rootStore: any;
@@ -171,4 +173,6 @@ declare module 'libx' {
   declare class Store {
     collection<TModel> (opts: ModelCollectionOptions<TModel>): Collection<TModel>;
   }
+
+  declare var model: any
 }

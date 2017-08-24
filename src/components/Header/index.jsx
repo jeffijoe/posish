@@ -1,10 +1,13 @@
 // @flow
 import * as React from 'react'
-import { color } from 'csx'
 import { observer } from 'inferno-mobx'
+import { darken, lighten, transparentize } from 'polished'
+import { css } from 'emotion'
 import type { RootStore } from '../../root-store'
 import { withTheme } from '../../utils/theming'
 import type { Theme } from '../../models/theme'
+import MdAdd from 'react-icons/lib/md/add'
+import MdClose from 'react-icons/lib/md/close'
 import { BodyClass } from '../ClassName'
 import Link from '../Link'
 import styled from 'emotion/react'
@@ -20,10 +23,10 @@ const Header = withTheme(styled('div')`
   left: 0;
   width: 100%;
   color: #fff;
-  box-shadow: 0 1px 2px ${({ theme }: ThemeProps) => color(theme.primaryColor).darken(0.3).fade(0.2)};
+  box-shadow: 0 1px 2px ${({ theme }: ThemeProps) => transparentize(0.8, darken(0.3, theme.primaryColor))};
   height: ${styling.HEADER_HEIGHT};
   background-color: ${({ theme }: ThemeProps) => theme.primaryColor};
-  background: ${({ theme }: ThemeProps) => `linear-gradient(to bottom, ${theme.primaryColor}, ${color(theme.primaryColor).darken(0.03)})`};
+  background: ${({ theme }: ThemeProps) => `linear-gradient(to bottom, ${theme.primaryColor}, ${darken(0.03, theme.primaryColor)})`};
   color: #fff;
   display: flex;
   align-items: center;
@@ -46,14 +49,72 @@ const Title = withTheme(styled(Link)`
 `)
 
 const ThemeSelect = withTheme(styled('select')`
-  background-color: ${({ theme }: ThemeProps) => color(theme.primaryColor).lighten(0.02).toHexString()};
+  background-color: ${({ theme }: ThemeProps) => lighten(0.02, theme.primaryColor)};
   border-radius: 2px;
   outline: none;
   color: #fff;
   padding: 10px 16px;
   font-size: 13px;
-  border: 1px solid ${({ theme }: ThemeProps) => color(theme.primaryColor).darken(0.05).desaturate(0.1).toHexString()};
+  border: 1px solid ${({ theme }: ThemeProps) => darken(0.05, theme.primaryColor)};
 `)
+
+const WorkspaceTabs = styled('div')`
+  display: flex;
+  align-items: stretch;
+  padding: 0 30px;
+`
+
+const WorkspaceTab = styled(Link)`
+  flex: 0 0 auto;
+  border-bottom: 4px solid ${(props) => props.active ? '#fff' : 'transparent'};
+  height: ${styling.HEADER_HEIGHT};
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  padding-top: 4px;
+  padding-right: 10px;
+  text-decoration: none;
+  color: #fff;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    & > div {
+      opacity: 1;
+    }
+  }
+`
+
+const NewWorkspaceButton = styled('a')`
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  font-size: 24px;
+  line-height: 0;
+  text-decoration: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`
+
+const CloseWorkspaceButton = ({ onClick }) => {
+  return (
+    <div
+      className={css`
+        color: #fff;
+        opacity: 0;
+        padding-left: 4px;
+      `}
+      onClick={(e) => e.preventDefault() || e.stopPropagation() || onClick()}
+    >
+      <MdClose/>
+    </div>
+  )
+}
 
 type Props = {
   rootStore: RootStore;
@@ -65,11 +126,27 @@ const HeaderContainer = ({ rootStore }: Props) =>
     <HeaderItem>
       <Title to="/">Posish</Title>
     </HeaderItem>
-    <HeaderItem fill></HeaderItem>
+    <HeaderItem fill>
+      <WorkspaceTabs>
+        {rootStore.workspaceStore.workspaces.map(w =>
+          <WorkspaceTab
+            key={w.id}
+            active={rootStore.workspaceStore.workspace === w}
+            to={`/w/${w.id}`}
+          >
+            {w.name}
+            <CloseWorkspaceButton onClick={() => window.confirm('Do you really want to remove this workspace?') && rootStore.workspaceStore.removeWorkspace(w)} />
+          </WorkspaceTab>
+        )}
+        <NewWorkspaceButton onClick={rootStore.workspaceStore.newWorkspace}>
+          <MdAdd/>
+        </NewWorkspaceButton>
+      </WorkspaceTabs>
+    </HeaderItem>
     <HeaderItem>
       <ThemeSelect value={rootStore.themeStore.theme.id} onChange={e => rootStore.themeStore.changeThemeById(e.target.value)}>
         {rootStore.themeStore.themes.map(t =>
-          <option value={t.id}>{t.name}</option>
+          <option key={t.id} value={t.id}>{t.name}</option>
         )}
       </ThemeSelect>
     </HeaderItem>

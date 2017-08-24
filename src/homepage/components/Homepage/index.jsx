@@ -3,7 +3,6 @@ import * as React from 'react'
 import styled from 'emotion/react'
 import { observer } from 'inferno-mobx'
 import Button from '../../../components/Button'
-import Header from '../../../components/Header'
 import type { RootStore } from '../../../root-store'
 
 const Container = styled('div')`
@@ -37,7 +36,6 @@ export type Props = {
 const Homepage = ({ rootStore }: Props) => {
   return (
     <Container>
-      <Header rootStore={rootStore} />
       <Title>Posish</Title>
       <Content>
         <p>

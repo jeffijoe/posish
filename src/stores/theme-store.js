@@ -23,7 +23,7 @@ export default function createThemeStore (): ThemeStore {
       store.theme = theme
     }),
     changeThemeById (themeId: string) {
-      this.changeTheme(_themeById(themeId))
+      store.changeTheme(_themeById(themeId))
     }
   })
 
@@ -34,6 +34,11 @@ export default function createThemeStore (): ThemeStore {
   return store
 }
 
-function _themeById (id: ?string): ?Theme {
-  return themes.find(x => x.id === id)
+function _themeById (id: ?string): Theme {
+  const theme = themes.find(x => x.id === id)
+  if (!theme) {
+    return themes[0]
+  }
+
+  return theme
 }
