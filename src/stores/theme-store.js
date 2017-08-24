@@ -1,13 +1,15 @@
 // @flow
 import createTheme from '../models/theme'
 import type { Theme } from '../models/theme'
-import { observable, action, reaction } from 'mobx'
+import { observable, action } from 'mobx'
 
 export type ThemeStore = {
   theme: Theme;
   themes: Array<Theme>;
   changeTheme(theme: Theme): void;
   changeThemeById(themeId: string): void;
+  serialize (): Object;
+  deserialize (data: Object): void,
 }
 
 const themes = [
@@ -18,17 +20,21 @@ const themes = [
 export default function createThemeStore (): ThemeStore {
   const store = observable({
     themes: observable.ref(themes),
-    theme: observable.shallow(_themeById(localStorage.getItem('selectedTheme')) || themes[0]),
+    theme: observable.shallow(themes[0]),
     changeTheme: action((theme: Theme) => {
       store.theme = theme
     }),
     changeThemeById (themeId: string) {
       store.changeTheme(_themeById(themeId))
+    },
+    serialize () {
+      return {
+        selectedTheme: store.theme.id
+      }
+    },
+    deserialize (data) {
+      store.changeThemeById(data.selectedTheme)
     }
-  })
-
-  reaction(() => store.theme, (theme) => {
-    localStorage.setItem('selectedTheme', theme.id)
   })
 
   return store

@@ -31,6 +31,7 @@ const Header = withTheme(styled('div')`
   display: flex;
   align-items: center;
   padding: 0 14px;
+  z-index: 1;
 `)
 
 const HeaderItem = withTheme(styled('div')`

@@ -18,6 +18,7 @@ const buttonBase = css`
   padding: 0 30px;
   line-height: 0;
   text-decoration: none;
+  cursor: pointer;
 `
 
 const themes = {

@@ -44,7 +44,7 @@ const Homepage = ({ rootStore }: Props) => {
         <p>Write or paste in some text, highlight areas of interest and generate some code.</p>
         <p>The primary use case for this is writing tests for parsers.</p>
       </Content>
-      <Button to="/w/123">Let's go</Button>
+      <Button onClick={() => rootStore.workspaceStore.newWorkspace()}>Let's go</Button>
     </Container>
   )
 }

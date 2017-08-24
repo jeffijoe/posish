@@ -1,12 +1,11 @@
 [ignore]
-.*/node_modules/preact/.*
-.*/node_modules/preact-compat/.*
 .*/node_modules/babel-plugin-emotion/.*
 .*/node_modules/emotion/src/.*
+.*/node_modules/polished/.*
+.*/node_modules/mobx/mobx.js.flow
 
 [libs]
 node_modules/fbjs/flow/lib
-node_modules/mobx/lib/mobx.js.flow
 
 [options]
 esproposal.class_static_fields=enable
@@ -17,3 +16,5 @@ module.name_mapper='^\(.*\)\.\(jpg\|png\|gif\|eot\|svg\|ttf\|woff\|woff2\|mp4\|w
 
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
+suppress_comment=\\(.\\|\n\\)*\\$FlowIgnoreNextLine
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe

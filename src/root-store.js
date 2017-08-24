@@ -1,5 +1,5 @@
 // @flow
-import { useStrict } from 'mobx'
+import { useStrict, autorunAsync } from 'mobx'
 
 import type { ThemeStore } from './stores/theme-store'
 import createThemeStore from './stores/theme-store'
@@ -24,12 +24,26 @@ export default function createRootStore (): RootStore {
     '/w/:workspaceId': (id) => workspaceStore.openWorkspace(id)
   })
   const workspaceStore = createWorkspaceStore(routerStore)
+  const themeStore = createThemeStore()
   const store = {
-    themeStore: createThemeStore(),
+    themeStore,
     workspaceStore,
     routerStore
   }
 
+  // Deserialize state
+  const data = JSON.parse(localStorage.getItem('data') || '{}')
+  workspaceStore.deserialize(data.workspaceStoreData || {})
+  themeStore.deserialize(data.themeStoreData || {})
+
   routerStore.start()
+
+  autorunAsync(() => {
+    console.log('saving')
+    localStorage.setItem('data', JSON.stringify({
+      workspaceStoreData: workspaceStore.serialize(),
+      themeStoreData: themeStore.serialize()
+    }))
+  }, 1000)
   return store
 }

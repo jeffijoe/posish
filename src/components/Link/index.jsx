@@ -22,7 +22,7 @@ function handleClick (props: Props, event: Event): mixed {
   }
 }
 
-const Link = ({ onClick, ...props }: Props) =>
+const Link = (props: Props) =>
   React.createElement(
     'a',
     {
