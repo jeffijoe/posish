@@ -1,17 +1,9 @@
 // @flow
 import { model } from 'libx'
 import { toJS, reaction, observable } from 'mobx'
-import uniqueId from 'lodash/uniqueId'
+import * as fragmentUtil from '../utils/fragments'
 
 const COLORS = ['#FF0000', '#00FF00', '#0000FF']
-
-type Fragment = {
-  key: string;
-  startPos: number;
-  endPos: number;
-  text: string;
-  color: ?string;
-}
 
 export interface Workspace {
   id: string;
@@ -20,7 +12,7 @@ export interface Workspace {
   template: string;
   code: string;
   +output: string;
-  fragments: Array<Fragment>
+  fragments: Array<fragmentUtil.Fragment>
 }
 
 export default function createWorkspace (attrs: Object, opts?: Object): Workspace {
@@ -37,25 +29,10 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
 
   reaction(() => workspace.code, (code) => {
     workspace.set({
-      fragments: codeUpdated(workspace.fragments, code)
+      fragments: fragmentUtil.codeUpdated(workspace.fragments, code)
     })
   })
 
   workspace.set(attrs, opts)
   return workspace
-}
-
-function newFrag (startPos: number, endPos: number, text: string): Fragment {
-  return {
-    key: uniqueId('frag-'),
-    startPos,
-    endPos,
-    text
-  }
-}
-
-function codeUpdated (fragments: Array<Fragment>, code: string) {
-  if (fragments.length === 0) {
-    return [newFrag(0, code.length, code)]
-  }
 }

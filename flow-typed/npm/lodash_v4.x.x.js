@@ -1,6 +1,10 @@
 // flow-typed signature: 83935520f5ff73d31271b162a330d97e
 // flow-typed version: 3b064385b7/lodash_v4.x.x/flow_>=v0.47.x
 
+declare module "lodash/uniqueId" {
+  declare module.exports: (prefix: string) => string;
+}
+
 declare module "lodash" {
   declare type TemplateSettings = {
     escape?: RegExp,

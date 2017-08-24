@@ -81,6 +81,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
 
   render () {
     const { workspace } = this.props
+    const frags = workspace.fragments
     return (
       <div className={css`user-select: none;`}>
         <div
@@ -95,8 +96,8 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
             `
           }
         >
-          {workspace.code.split(' ').map((w, idx) =>
-            <span key={idx}>{w} </span>
+          {frags.map((f) =>
+            <span key={f.key}>{f.text}</span>
           )}
         </div>
       </div>
