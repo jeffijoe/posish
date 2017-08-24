@@ -2,9 +2,16 @@ import * as fragmentUtil from '../fragments'
 
 describe('fragments', () => {
   describe('codeUpdated', () => {
-    it('returns0 fragments when there are none', () => {
+    it('returns 1 fragment initially', () => {
       const result = fragmentUtil.codeUpdated([], 'hello')
-      expect(result.length).toBe(0)
+      allEquals([{
+        text: 'hello',
+        parts: ['hello'],
+        startPos: 0,
+        endPos: 5,
+        color: null,
+        innerFragments: null
+      }], result)
     })
   })
 
@@ -59,6 +66,36 @@ describe('fragments', () => {
           innerFragments: null
         }]
       }], result)
+    })
+
+    it('wraps an inner fragment when range is greater in both directions', () => {
+      let result = fragmentUtil.highlight([], 'hello cruel world', 6, 11, '1')
+      result = fragmentUtil.highlight(result, 'hello cruel world', 0, 17, '2')
+      allEquals([{
+        text: 'hello cruel world',
+        parts: ['hello ', ' world'],
+        startPos: 0,
+        endPos: 17,
+        color: '2',
+        innerFragments: [{
+          text: 'cruel',
+          parts: ['cruel'],
+          startPos: 6,
+          endPos: 11,
+          color: '1',
+          innerFragments: null
+        }]
+      }], result)
+    })
+
+    it('does nothing when adding an out-of bounds highlight', () => {
+      const result1 = fragmentUtil.highlight([], 'hello cruel world', 6, 11, '1')
+      const result2 = fragmentUtil.highlight(result1, 'hello cruel world', 0, 8, '2')
+      expect(result1).toBe(result2)
+
+      const result3 = fragmentUtil.highlight([], 'hello cruel world', 6, 11, '1')
+      const result4 = fragmentUtil.highlight(result3, 'hello cruel world', 7, 13, '2')
+      expect(result3).toBe(result4)
     })
   })
 

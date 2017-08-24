@@ -1,7 +1,7 @@
 // @flow
 import uniqueId from 'lodash/uniqueId'
 
-type Fragment = {
+export type Fragment = {
   key: string;
   startPos: number;
   endPos: number;
@@ -24,7 +24,7 @@ export function newFrag (startPos: number, endPos: number, text: string, color?:
 }
 
 export function codeUpdated (fragments: Array<Fragment>, newSource: string): Array<Fragment> {
-  return fragments
+  return addFragment([], newSource, 0, newSource.length, null)
 }
 
 export function highlight (
@@ -130,12 +130,36 @@ function addFragment (
   source: string,
   startPos: number,
   endPos: number,
-  color: string
+  color: ?string
 ): Array<Fragment> {
   const text = source.substring(startPos, endPos)
   const frag = newFrag(startPos, endPos, text, color)
   if (!fragments) {
     return [frag]
+  }
+
+  const outOfBounds = fragments.some(f => {
+    const lower = startPos < f.startPos && endPos > f.startPos && endPos < f.endPos
+    const higher = startPos > f.startPos && startPos < f.endPos && endPos > f.endPos
+    return lower || higher
+  })
+
+  if (outOfBounds) {
+    return fragments
+  }
+
+  const within = fragments.filter(f => f.startPos >= startPos && f.endPos <= endPos)
+  if (within.length > 0) {
+    const withinStartIndex = fragments.indexOf(within[0])
+    let withinEndIndex = withinStartIndex
+    if (within.length > 1) {
+      withinEndIndex = fragments.indexOf(within[within.length - 1])
+    }
+    fragments = fragments.filter((_, i) => i >= withinStartIndex || i < withinEndIndex)
+    fragments.splice(withinStartIndex, withinEndIndex - withinStartIndex + 1, frag)
+    frag.innerFragments = within
+    frag.parts = updateParts(within, source, frag.startPos, frag.endPos)
+    return fragments
   }
 
   // Figure out where to add the new fragment.
