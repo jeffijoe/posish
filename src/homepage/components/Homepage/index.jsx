@@ -18,21 +18,22 @@ const ContentLink = withTheme(styled('a')`
   color: ${p => p.theme.primaryColor};
 `)
 
-const Title = styled('h1')`
-  font-size: 2.6em;
-  font-weight: 300;
-  padding-bottom: 20px
-`
-
 const Content = styled('div')`
-  font-size: 14px;
+  font-size: 18px;
   padding-bottom: 20px;
   & p {
-    padding-bottom: 10px;
+    padding-bottom: 20px;
     &:last-child {
       padding-bottom: 0;
     }
   }
+`
+
+const Logo = styled('img')`
+  max-width: 320px;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
 `
 
 export type Props = {
@@ -42,7 +43,7 @@ export type Props = {
 const Homepage = ({ rootStore }: Props) => {
   return (
     <Container>
-      <Title>Posish</Title>
+      <Logo src={require(`../../../assets/logo-${rootStore.themeStore.theme.id}.svg`)} />
       <Content>
         <p>
           Posish is a tool that helps you generate code with character positions.

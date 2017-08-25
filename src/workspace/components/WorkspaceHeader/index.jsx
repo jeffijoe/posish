@@ -136,7 +136,7 @@ const WorkspaceHeader = ({ workspaceStore, theme }: Props) => {
       </ToggleBlock>
       <SideBlock>
         <Actions>
-          <Button small onMouseDown={() => { workspaceStore.highlight(); return false }}>Highlight</Button>
+          <Button small title="Shortcut: Ctrl+M" onMouseDown={() => { workspaceStore.highlight(); return false }}>Highlight</Button>
           &nbsp;
           <Button small onClick={workspace.copyAll}>Copy all</Button>
           &nbsp;

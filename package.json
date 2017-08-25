@@ -2,6 +2,9 @@
   "name": "posish",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Jeff Hansen"
+  },
   "dependencies": {
     "classnames": "^2.2.5",
     "director": "^1.2.8",

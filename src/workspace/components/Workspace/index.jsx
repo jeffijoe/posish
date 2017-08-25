@@ -111,6 +111,7 @@ const Workspace = ({ workspaceStore }: Props) => {
       <WorkspaceLayoutItem>
         <Footer>
           Created with <span role="img" aria-label="love">❤️</span> + a <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/p/BYLNI6jDFri/">cat on my shoulder</a> by <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Jeffijoe">@jeffijoe</a>.
+          Open-sourced on <a target="_blank" rel="noopener noreferrer" href="https://github.com/jeffijoe/posish">Github</a>.
         </Footer>
       </WorkspaceLayoutItem>
     </WorkspaceLayout>

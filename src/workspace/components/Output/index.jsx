@@ -4,6 +4,7 @@ import Button from '../../../components/Button'
 import { observer } from 'inferno-mobx'
 import { css } from 'emotion'
 import { withTheme } from '../../../utils/theming'
+import truncate from 'lodash/truncate'
 
 const Output = ({ workspace, theme }) => {
   const styles = {
@@ -87,28 +88,28 @@ const Output = ({ workspace, theme }) => {
             </div>
           )
           : workspace.output.map(o =>
-              <div key={o.color} className={styles.output}>
-                <div className={cx(styles.outputHeader)}>
-                  <div
-                    className={styles.outputColor}
-                    style={{
-                      backgroundColor: o.color
-                    }}
-                  >
-                  </div>
-                  &nbsp;
-                  <div className={styles.outputName}>
-                    {o.text}
-                  </div>
-                  <div className={styles.outputActions}>
-                    <Button small onClick={() => workspace.copyOutput(o)}>Copy</Button>
-                  </div>
+            <div key={o.color} className={styles.output}>
+              <div className={cx(styles.outputHeader)}>
+                <div
+                  className={styles.outputColor}
+                  style={{
+                    backgroundColor: o.color
+                  }}
+                >
                 </div>
-                <div className={styles.outputContent}>
-                  {o.content}
+                &nbsp;
+                <div className={styles.outputName}>
+                  {truncate(o.text, 30)}
+                </div>
+                <div className={styles.outputActions}>
+                  <Button small onClick={() => workspace.copyOutput(o)}>Copy</Button>
                 </div>
               </div>
-            )
+              <div className={styles.outputContent}>
+                {o.content}
+              </div>
+            </div>
+          )
       }
 
     </div>

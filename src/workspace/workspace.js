@@ -106,6 +106,9 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
     },
     removeHighlight (key: string) {
       workspace.fragments = fragmentUtil.remove(workspace.fragments, workspace.code, key)
+      if (workspace.fragments.length === 0) {
+        workspace.invalidate()
+      }
       return workspace
     },
     invalidate () {
