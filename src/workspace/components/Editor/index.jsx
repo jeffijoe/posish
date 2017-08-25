@@ -13,7 +13,7 @@ const absolute = css`
   left: 0;
 `
 
-export const Editor = withTheme(observer(({ readOnly, value, onChange, theme }) => {
+export const Editor = withTheme(observer(({ readOnly, value, onChange, theme, ...rest }) => {
   return (
     <div>
       <textarea
@@ -25,6 +25,7 @@ export const Editor = withTheme(observer(({ readOnly, value, onChange, theme }) 
           resize: none;
           padding: 10px;
           font-weight: 600;
+          font-size: 14px;
           font-family: 'courier new';
           white-space: nowrap;
           &:focus {
@@ -38,6 +39,7 @@ export const Editor = withTheme(observer(({ readOnly, value, onChange, theme }) 
         value={value}
         onChange={e => onChange(e.target.value)}
         readOnly={readOnly}
+        {...rest}
       />
     </div>
   )
@@ -62,19 +64,6 @@ function isChildOf (parent, child) {
   return false
 }
 
-function getSelectionPos (containerEl) {
-  const range = window.getSelection().getRangeAt(0)
-  const preSelectionRange = range.cloneRange()
-  preSelectionRange.selectNodeContents(containerEl)
-  preSelectionRange.setEnd(range.startContainer, range.startOffset)
-  const start = preSelectionRange.toString().length
-
-  return {
-    start,
-    end: start + range.toString().length
-  }
-}
-
 export const Highlighter = withTheme(observer(class Highlighter extends React.Component {
   onSelectionChange = e => {
     const selection = document.getSelection()
@@ -87,6 +76,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
 
   setRef = (node) => {
     this._node = node
+    this.props.workspaceStore.selectionProvider.setContainerNode(node)
     // if (node) {
     //   document.addEventListener('selectionchange', this.onSelectionChange)
     // } else {
@@ -96,19 +86,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
 
   onKeyPress = (e) => {
     if (e.ctrlKey && e.key === 'm') {
-      const sel = document.getSelection()
-      if (sel.rangeCount !== 1) {
-        return
-      }
-
-      const pos = getSelectionPos(this._node)
-      const start = pos.start > pos.end ? pos.end : pos.start
-      const end = pos.start > pos.end ? pos.start : pos.end
-      this.props.workspace.highlight(
-        start,
-        end
-      )
-      sel.removeAllRanges()
+      this.props.workspaceStore.highlight()
     }
   };
 
@@ -182,26 +160,45 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
     const { workspace, theme } = this.props
     const frags = workspace.fragments
     return (
-      <div className={css`user-select: none;`}>
-        <div
-          ref={this.setRef}
-          onKeyPress={this.onKeyPress}
-          tabIndex={-1}
-          className={css`
-            ${absolute};
-            padding: 10px;
-            font-family: 'courier new';
-            white-space: pre;
-            overflow: auto;
-            user-select: text;
-            outline: none;
-            `
-          }
-        >
-          {frags.map((f) =>
-            this.renderFragment(workspace, theme, f)
-          )}
-        </div>
+      <div className={css`user-select: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;`}>
+        {frags.length === 0
+          ? (
+            <div
+              className={css`
+                padding: 10% 20px;
+                overflow: auto;
+                text-align: center;
+                opacity: 0.7;
+               `
+              }
+            >
+              Once you have written some code, highlight points of interest
+              here and press Ctrl+M to add an output.
+            </div>
+          )
+          : (
+            <div
+              ref={this.setRef}
+              onKeyPress={this.onKeyPress}
+              tabIndex={-1}
+              className={css`
+                ${absolute};
+                padding: 10px;
+                font-family: 'courier new';
+                font-size: 14px;
+                white-space: pre;
+                overflow: auto;
+                user-select: text;
+                outline: none;
+                `
+              }
+            >
+              {frags.map((f) =>
+                this.renderFragment(workspace, theme, f)
+              )}
+            </div>
+          )
+        }
       </div>
     )
   }

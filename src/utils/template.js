@@ -33,13 +33,43 @@ export function generateOutputs (source: string, fragments: Array<Fragment>, tem
 
   const relevantFrags = collectFragments(fragments)
 
-  return relevantFrags.map(f => ({
-    color: f.color || '',
-    content: compiled({ POS_START: f.startPos, POS_END: f.endPos, LINE_START: 0, COL_START: 2, LINE_END: 0, COL_END: 4 }),
-    text: f.text
-  }))
+  return relevantFrags.map(f => {
+    const [startLineCol, endLineCol] = getLineColInfo(source, f.startPos, f.endPos)
+    return {
+      color: f.color || '',
+      content: compiled({
+        POS_START: f.startPos,
+        POS_END: f.endPos,
+        LINE_START: startLineCol.line,
+        COL_START: startLineCol.col,
+        LINE_END: endLineCol.line,
+        COL_END: endLineCol.col
+      }),
+      text: f.text
+    }
+  })
 }
 
-function getNewlineCount (source: string, to: number): number {
+type LineCol = { line: number, col: number }
 
+function getLineColInfo (source: string, start: number, end: number): [LineCol, LineCol] {
+  let line = 0;
+  let col = 0
+  let i = 0
+  let startLineCol = { line: 0, col: 0 }
+  let endLineCol = { line: 0, col: 0 }
+  while (i < end) {
+    let ch = source.charCodeAt(i)
+    if (i === start) {
+      startLineCol = { line, col }
+    }
+    col++
+    if (ch === 10) {
+      line++
+      col = 0
+    }
+    i++
+  }
+  endLineCol = { line, col }
+  return [startLineCol, endLineCol]
 }

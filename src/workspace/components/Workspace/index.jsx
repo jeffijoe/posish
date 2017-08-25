@@ -79,9 +79,11 @@ const Footer = withTheme(styled('div')`
   `)
 
 const paneViews = {
-  Template: ({ workspace }) => <Editor onChange={(value) => workspace.set({ template: value })} value={workspace.template} />,
-  Edit: ({ workspace }) => <Editor onChange={(value) => workspace.set({ code: value })} value={workspace.code} />,
-  Highlight: ({ workspace }) => <Highlighter workspace={workspace} />,
+  Template: ({ workspace }) => (
+    <Editor onChange={(value) => workspace.set({ template: value })} value={workspace.template} placeholder="Write a template here" />
+  ),
+  Edit: ({ workspace }) => <Editor onChange={(value) => workspace.set({ code: value })} value={workspace.code} placeholder="Write code to highlight here" />,
+  Highlight: ({ workspace, workspaceStore }) => <Highlighter workspace={workspace} workspaceStore={workspaceStore} />,
   Output: ({ workspace }) => <Output workspace={workspace} />
 }
 
@@ -98,14 +100,17 @@ const Workspace = ({ workspaceStore }: Props) => {
         <Panes>
           {workspaceStore.panes.filter(workspaceStore.isPaneActive).map(p =>
             <Pane key={p}>
-              {React.createElement(paneViews[p], { workspace: workspaceStore.workspace })}
+              {React.createElement(paneViews[p], {
+                workspace: workspaceStore.workspace,
+                workspaceStore
+              })}
             </Pane>
           )}
         </Panes>
       </WorkspaceLayoutItem>
       <WorkspaceLayoutItem>
         <Footer>
-          Created with a growing disgust for Flow by <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Jeffijoe">@jeffijoe</a>.
+          Created with <span role="img" aria-label="love">❤️</span> + a <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/p/BYLNI6jDFri/">cat on my shoulder</a> by <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/Jeffijoe">@jeffijoe</a>.
         </Footer>
       </WorkspaceLayoutItem>
     </WorkspaceLayout>

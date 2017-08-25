@@ -3,7 +3,6 @@ import cx from 'classnames'
 import Button from '../../../components/Button'
 import { observer } from 'inferno-mobx'
 import { css } from 'emotion'
-import { copyTextToClipboard } from '../../../utils/clipboard'
 import { withTheme } from '../../../utils/theming'
 
 const Output = ({ workspace, theme }) => {
@@ -68,29 +67,50 @@ const Output = ({ workspace, theme }) => {
 
   return (
     <div className={cx(styles.root)}>
-      {workspace.output.map(o =>
-        <div key={o.color} className={styles.output}>
-          <div className={cx(styles.outputHeader)}>
+      {typeof workspace.output === 'string'
+        ? (
+          <div className={css`padding: 20px; text-align: center;`}>
+            Template error: {workspace.output}
+          </div>
+        )
+        : workspace.output.length === 0
+          ? (
             <div
-              className={styles.outputColor}
-              style={{
-                backgroundColor: o.color
-              }}
+              className={css`
+                text-align: center;
+                padding: 8% 20px;
+                opacity: 0.7;
+                `
+              }
             >
+              As you highlight fragments, they will show up here with the rendered template.
             </div>
-            &nbsp;
-            <div className={styles.outputName}>
-              {o.text}
-            </div>
-            <div className={styles.outputActions}>
-              <Button small onClick={() => copyTextToClipboard(o.content)}>Copy</Button>
-            </div>
-          </div>
-          <div className={styles.outputContent}>
-            {o.content}
-          </div>
-        </div>
-      )}
+          )
+          : workspace.output.map(o =>
+              <div key={o.color} className={styles.output}>
+                <div className={cx(styles.outputHeader)}>
+                  <div
+                    className={styles.outputColor}
+                    style={{
+                      backgroundColor: o.color
+                    }}
+                  >
+                  </div>
+                  &nbsp;
+                  <div className={styles.outputName}>
+                    {o.text}
+                  </div>
+                  <div className={styles.outputActions}>
+                    <Button small onClick={() => workspace.copyOutput(o)}>Copy</Button>
+                  </div>
+                </div>
+                <div className={styles.outputContent}>
+                  {o.content}
+                </div>
+              </div>
+            )
+      }
+
     </div>
   )
 }

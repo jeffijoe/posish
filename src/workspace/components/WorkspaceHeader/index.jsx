@@ -4,8 +4,9 @@ import { observer } from 'inferno-mobx'
 import type { WorkspaceStore } from '../../workspace-store'
 import { css } from 'emotion'
 import styled from 'emotion/react'
-import { lighten, desaturate, darken, shade } from 'polished'
+import { lighten, desaturate } from 'polished'
 import { withTheme } from '../../../utils/theming'
+import Button from '../../../components/Button'
 import type { Theme } from '../../../models/theme'
 import cx from 'classnames'
 import * as styling from '../../../styling'
@@ -48,15 +49,16 @@ const ToggleBlock = styled('div')`
 `
 
 const Toggler = withTheme(styled('a')`
-  height: 32px;
+  height: 28px;
   padding: 0 12px;
   display: inline-flex;
   line-height: 0;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 10px;
   text-decoration: none;
   cursor: pointer;
+  user-select: none;
   &:first-child {
     border-radius: 4px 0 0 4px;
   }
@@ -67,13 +69,21 @@ const Toggler = withTheme(styled('a')`
     light: css`
       background-color: ${active ? theme.primaryColor : '#e7e7ef'};
       color: ${active ? '#fff' : theme.textColor};
+      box-shadow: 0 1px 1px rgba(140, 150, 170, 0.3);
     `,
     dark: css`
       background-color: ${active ? theme.primaryColor : 'rgba(255, 255, 255, 0.1)'};
       color: ${theme.textColor};
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     `
   }[theme.id])}
 `)
+
+const Actions = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`
 
 const styles = {
   header: {
@@ -124,7 +134,15 @@ const WorkspaceHeader = ({ workspaceStore, theme }: Props) => {
       <ToggleBlock>
         {workspaceStore.panes.map(renderToggler)}
       </ToggleBlock>
-      <SideBlock></SideBlock>
+      <SideBlock>
+        <Actions>
+          <Button small onMouseDown={() => { workspaceStore.highlight(); return false }}>Highlight</Button>
+          &nbsp;
+          <Button small onClick={workspace.copyAll}>Copy all</Button>
+          &nbsp;
+          <Button small onClick={workspace.invalidate}>Clear all</Button>
+        </Actions>
+      </SideBlock>
     </div>
   )
 }

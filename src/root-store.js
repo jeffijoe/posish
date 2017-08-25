@@ -10,10 +10,14 @@ import createRouterStore from './stores/router-store'
 import type { WorkspaceStore } from './workspace/workspace-store'
 import createWorkspaceStore from './workspace/workspace-store'
 
+import type { SelectionProvider } from './workspace/selection-provider'
+import createSelectionProvider from './workspace/selection-provider'
+
 export type RootStore = {
   themeStore: ThemeStore;
   routerStore: RouterStore;
   workspaceStore: WorkspaceStore;
+  selectionProvider: SelectionProvider;
 }
 
 useStrict(true)
@@ -23,12 +27,14 @@ export default function createRootStore (): RootStore {
     '(/)': () => routerStore.setView(null),
     '/w/:workspaceId': (id) => workspaceStore.openWorkspace(id)
   })
-  const workspaceStore = createWorkspaceStore(routerStore)
+  const selectionProvider = createSelectionProvider()
+  const workspaceStore = createWorkspaceStore(routerStore, selectionProvider)
   const themeStore = createThemeStore()
   const store = {
     themeStore,
     workspaceStore,
-    routerStore
+    routerStore,
+    selectionProvider
   }
 
   // Deserialize state

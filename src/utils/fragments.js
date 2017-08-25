@@ -1,5 +1,5 @@
 // @flow
-import uniqueId from 'lodash/uniqueId'
+import { v1 } from 'uuid'
 
 export type Fragment = {
   key: string;
@@ -13,7 +13,7 @@ export type Fragment = {
 
 export function newFrag (startPos: number, endPos: number, text: string, color?: ?string): Fragment {
   return {
-    key: uniqueId('frag-'),
+    key: 'frag-' + v1(),
     startPos,
     endPos,
     text: text,
@@ -37,7 +37,14 @@ export function highlight (
   const parent = findFragment(fragments, startPos, endPos)
   if (parent) {
     if (parent.startPos === startPos && parent.endPos === endPos) {
-      return fragments
+      if (parent.color) {
+        return fragments
+      }
+
+      return updateFragment(fragments, parent.key, {
+        ...parent,
+        color
+      })
     }
     const innerFragments = addFragment(parent.innerFragments, source, startPos, endPos, color)
     if (innerFragments === parent.innerFragments) {
@@ -137,6 +144,9 @@ function addFragment (
   endPos: number,
   color: ?string
 ): Array<Fragment> {
+  if (!source) {
+    return []
+  }
   const text = source.substring(startPos, endPos)
   const frag = newFrag(startPos, endPos, text, color)
   if (!fragments) {
@@ -144,8 +154,8 @@ function addFragment (
   }
 
   const outOfBounds = fragments.some(f => {
-    const lower = startPos <= f.startPos && endPos >= f.startPos && endPos <= f.endPos
-    const higher = startPos >= f.startPos && startPos <= f.endPos && endPos >= f.endPos
+    const lower = startPos < f.startPos && endPos > f.startPos && endPos < f.endPos
+    const higher = startPos > f.startPos && startPos < f.endPos && endPos > f.endPos
     return lower || higher
   })
 

@@ -4,13 +4,19 @@ import styled from 'emotion/react'
 import { observer } from 'inferno-mobx'
 import Button from '../../../components/Button'
 import type { RootStore } from '../../../root-store'
+import { withTheme } from '../../../utils/theming'
 
-const Container = styled('div')`
+const Container = withTheme(styled('div')`
   padding: 20px;
   padding-top: 10%;
   max-width: 768px;
   margin: 0 auto;
-`
+`)
+
+const ContentLink = withTheme(styled('a')`
+  text-decoration: none;
+  color: ${p => p.theme.primaryColor};
+`)
 
 const Title = styled('h1')`
   font-size: 2.6em;
@@ -40,11 +46,15 @@ const Homepage = ({ rootStore }: Props) => {
       <Content>
         <p>
           Posish is a tool that helps you generate code with character positions.
+          Write or paste in some text, highlight areas of interest and generate some code.
+          The primary use case for this is writing tests for parsers.
         </p>
-        <p>Write or paste in some text, highlight areas of interest and generate some code.</p>
-        <p>The primary use case for this is writing tests for parsers.</p>
+        <p>All data is stored locally using <code>localStorage</code>.</p>
+        <p>Created by Jeff Hansen - <ContentLink target="_blank" rel="noopener noreferrer" href="https://twitter.com/Jeffijoe">@jeffijoe</ContentLink></p>
       </Content>
-      <Button onClick={() => rootStore.workspaceStore.newWorkspace()}>Let's go</Button>
+      <Button onClick={() => rootStore.workspaceStore.newWorkspace()}>Create from scratch</Button>
+      &nbsp;&nbsp;<small>or</small>&nbsp;&nbsp;
+      <Button onClick={() => rootStore.workspaceStore.loadExample()}>Load an example</Button>
     </Container>
   )
 }

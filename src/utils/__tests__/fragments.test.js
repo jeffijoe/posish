@@ -133,6 +133,15 @@ describe('fragments', () => {
       const result2 = fragmentUtil.highlight(result1, src, 6, 11, '2')
       expect(result1).toBe(result2)
     })
+
+    it('adds color to an uncolored fragment', () => {
+      const src = 'hello cruel world'
+      const result1 = fragmentUtil.highlight(fragmentUtil.codeUpdated([], src), src, 0, 17, null)
+      const result2 = fragmentUtil.highlight(result1, src, 0, 17, '1')
+      expect(result1).not.toBe(result2)
+      expect(result2.length).toBe(1)
+      expect(result2[0].color).toBe('1')
+    })
   })
 
   describe('removeHighlight', () => {

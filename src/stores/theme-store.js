@@ -13,8 +13,8 @@ export type ThemeStore = {
 }
 
 const themes = [
-  createTheme('light', 'Light', '#2395f3', '#454552'),
-  createTheme('dark', 'Dark', '#EC6A5C', '#fff')
+  createTheme('light', 'Light theme', '#2395f3', '#454552'),
+  createTheme('dark', 'Dark theme', '#EC6A5C', '#fff')
 ]
 
 export default function createThemeStore (): ThemeStore {
