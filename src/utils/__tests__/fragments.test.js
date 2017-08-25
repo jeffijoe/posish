@@ -68,6 +68,35 @@ describe('fragments', () => {
       }], result)
     })
 
+    it('adds fragments after', () => {
+      const src = 'if stuff then 1 else 2'
+      let result = fragmentUtil.codeUpdated([], src)
+      result = fragmentUtil.highlight(result, src, 3, 8, '1')
+      result = fragmentUtil.highlight(result, src, 14, 15, '2')
+      allEquals([{
+        text: src,
+        parts: ['if ', ' then ', ' else 2'],
+        startPos: 0,
+        endPos: 22,
+        color: null,
+        innerFragments: [{
+          text: 'stuff',
+          parts: ['stuff'],
+          startPos: 3,
+          endPos: 8,
+          color: '1',
+          innerFragments: null
+        }, {
+          text: '1',
+          parts: ['1'],
+          startPos: 14,
+          endPos: 15,
+          color: '2',
+          innerFragments: null
+        }]
+      }], result)
+    })
+
     it('wraps an inner fragment when range is greater in both directions', () => {
       let result = fragmentUtil.highlight([], 'hello cruel world', 6, 11, '1')
       result = fragmentUtil.highlight(result, 'hello cruel world', 0, 17, '2')
@@ -96,6 +125,13 @@ describe('fragments', () => {
       const result3 = fragmentUtil.highlight([], 'hello cruel world', 6, 11, '1')
       const result4 = fragmentUtil.highlight(result3, 'hello cruel world', 7, 13, '2')
       expect(result3).toBe(result4)
+    })
+
+    it('does nothing when adding the same fragment again', () => {
+      const src = 'hello cruel world'
+      const result1 = fragmentUtil.highlight(fragmentUtil.codeUpdated([], src), src, 6, 11, '1')
+      const result2 = fragmentUtil.highlight(result1, src, 6, 11, '2')
+      expect(result1).toBe(result2)
     })
   })
 

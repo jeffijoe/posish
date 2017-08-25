@@ -2,6 +2,8 @@ import * as React from 'react'
 import { observer } from 'inferno-mobx'
 import { withTheme } from '../../../utils/theming'
 import { css } from 'emotion'
+import MdClose from 'react-icons/lib/md/close'
+import { shade } from 'polished'
 
 const absolute = css`
   position: absolute;
@@ -60,6 +62,19 @@ function isChildOf (parent, child) {
   return false
 }
 
+function getSelectionPos (containerEl) {
+  const range = window.getSelection().getRangeAt(0)
+  const preSelectionRange = range.cloneRange()
+  preSelectionRange.selectNodeContents(containerEl)
+  preSelectionRange.setEnd(range.startContainer, range.startOffset)
+  const start = preSelectionRange.toString().length
+
+  return {
+    start,
+    end: start + range.toString().length
+  }
+}
+
 export const Highlighter = withTheme(observer(class Highlighter extends React.Component {
   onSelectionChange = e => {
     const selection = document.getSelection()
@@ -72,20 +87,106 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
 
   setRef = (node) => {
     this._node = node
-    if (node) {
-      document.addEventListener('selectionchange', this.onSelectionChange)
-    } else {
-      document.removeEventListener('selectionchange', this.onSelectionChange)
+    // if (node) {
+    //   document.addEventListener('selectionchange', this.onSelectionChange)
+    // } else {
+    //   document.removeEventListener('selectionchange', this.onSelectionChange)
+    // }
+  };
+
+  onKeyPress = (e) => {
+    if (e.ctrlKey && e.key === 'm') {
+      const sel = document.getSelection()
+      if (sel.rangeCount !== 1) {
+        return
+      }
+
+      const pos = getSelectionPos(this._node)
+      const start = pos.start > pos.end ? pos.end : pos.start
+      const end = pos.start > pos.end ? pos.start : pos.end
+      this.props.workspace.highlight(
+        start,
+        end
+      )
+      sel.removeAllRanges()
     }
   };
 
+  renderFragment = (workspace, theme, fragment) => {
+    const spanClass = css`
+      position: relative;
+      padding: 1px;
+      line-height: 1.4em;
+      border-radius: 4px;
+      &:hover {
+        & > a {
+          opacity: 1;
+        }
+      }
+    `
+    const style = fragment.color && {
+      backgroundColor: fragment.color,
+      border: `1px solid ${shade(0.7, fragment.color)}`
+    }
+
+    let result = []
+    if (!fragment.innerFragments || fragment.innerFragments.length === 0) {
+      result = fragment.parts[0]
+    } else {
+      fragment.innerFragments.forEach((innerFrag, idx) => {
+        if (idx === 0) {
+          result.push(<span key={`${fragment.key}-part0`}>{fragment.parts[0]}</span>)
+        }
+        result.push(this.renderFragment(workspace, theme, innerFrag))
+        result.push(<span key={`${fragment.key}-part${idx + 1}`}>{fragment.parts[idx + 1]}</span>)
+      })
+    }
+
+    return (
+      <span className={spanClass} key={fragment.key} style={style}>
+        {result}
+        {fragment.color &&
+          <a
+            onClick={e => e.preventDefault() || workspace.removeHighlight(fragment.key)}
+            className={css`
+              text-decoration: none;
+              opacity: 0;
+              position: absolute;
+              top: -8px;
+              left: -8px;
+              width: 16px;
+              height: 16px;
+              cursor: pointer;
+              background-color: ${theme.id === 'light' ? '#f0f0fe' : '#404049'};
+              z-index: 1;
+              border-radius: 50%;
+              font-size: 10px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              border: 1px solid ${theme.id === 'light' ? '#e0e0ee' : '#202039'};
+              &:hover {
+                opacity: 1!important;
+              }
+              `
+            }
+          >
+            <MdClose/>
+          </a>
+        }
+      </span>
+    )
+  };
+
   render () {
-    const { workspace } = this.props
+    const { workspace, theme } = this.props
     const frags = workspace.fragments
     return (
       <div className={css`user-select: none;`}>
         <div
           ref={this.setRef}
+          onKeyPress={this.onKeyPress}
+          tabIndex={-1}
           className={css`
             ${absolute};
             padding: 10px;
@@ -93,11 +194,12 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
             white-space: pre;
             overflow: auto;
             user-select: text;
+            outline: none;
             `
           }
         >
           {frags.map((f) =>
-            <span key={f.key}>{f.text}</span>
+            this.renderFragment(workspace, theme, f)
           )}
         </div>
       </div>

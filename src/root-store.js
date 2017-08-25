@@ -39,7 +39,6 @@ export default function createRootStore (): RootStore {
   routerStore.start()
 
   autorunAsync(() => {
-    console.log('saving')
     localStorage.setItem('data', JSON.stringify({
       workspaceStoreData: workspaceStore.serialize(),
       themeStoreData: themeStore.serialize()

@@ -23,22 +23,28 @@ const buttonBase = css`
 
 const themes = {
   light: css`
-    box-shadow: 0 2px 2px rgba(50, 60, 70, 0.2);
+    box-shadow: 0 1px 2px rgba(50, 60, 70, 0.2);
     color: #fff;
   `,
   dark: css`
-    box-shadow: 0 2px 2px rgba(50, 60, 70, 0.2);
+    box-shadow: 0 1px 2px rgba(50, 60, 70, 0.2);
     color: #fff;
   `
 }
 
 type Props = LinkProps & {
-  theme: Theme
+  theme: Theme;
+  small: boolean;
 }
 
 const Button = withTheme(styled(Link)`
   ${buttonBase};
   ${(p: Props) => themes[p.theme.id] || themes.light};
+  ${(p: Props) => p.small && css`
+    font-size: 10px;
+    height: 28px;
+    padding: 0 16px;
+  `};
   background-color: ${(p: Props) => p.theme.primaryColor};
 `)
 

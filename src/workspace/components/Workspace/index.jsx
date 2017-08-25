@@ -8,6 +8,7 @@ import WorkspaceHeader from '../WorkspaceHeader'
 import * as styling from '../../../styling'
 import { withTheme } from '../../../utils/theming'
 import { Editor, Highlighter } from '../Editor'
+import Output from '../Output'
 
 type Props = {
   workspaceStore: WorkspaceStore;
@@ -81,7 +82,7 @@ const paneViews = {
   Template: ({ workspace }) => <Editor onChange={(value) => workspace.set({ template: value })} value={workspace.template} />,
   Edit: ({ workspace }) => <Editor onChange={(value) => workspace.set({ code: value })} value={workspace.code} />,
   Highlight: ({ workspace }) => <Highlighter workspace={workspace} />,
-  Output: ({ workspace }) => <Editor readOnly value={workspace.output} />
+  Output: ({ workspace }) => <Output workspace={workspace} />
 }
 
 const Workspace = ({ workspaceStore }: Props) => {

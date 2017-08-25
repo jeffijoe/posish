@@ -35,9 +35,14 @@ export function highlight (
   color: string
 ): Array<Fragment> {
   const parent = findFragment(fragments, startPos, endPos)
-
   if (parent) {
+    if (parent.startPos === startPos && parent.endPos === endPos) {
+      return fragments
+    }
     const innerFragments = addFragment(parent.innerFragments, source, startPos, endPos, color)
+    if (innerFragments === parent.innerFragments) {
+      return fragments
+    }
     const updated = {
       ...parent,
       innerFragments,
@@ -139,8 +144,8 @@ function addFragment (
   }
 
   const outOfBounds = fragments.some(f => {
-    const lower = startPos < f.startPos && endPos > f.startPos && endPos < f.endPos
-    const higher = startPos > f.startPos && startPos < f.endPos && endPos > f.endPos
+    const lower = startPos <= f.startPos && endPos >= f.startPos && endPos <= f.endPos
+    const higher = startPos >= f.startPos && startPos <= f.endPos && endPos >= f.endPos
     return lower || higher
   })
 
@@ -164,7 +169,7 @@ function addFragment (
 
   // Figure out where to add the new fragment.
   const candidates = fragments.filter(x => x.endPos <= startPos)
-  const last = Math.max(candidates.length - 1, 0)
+  const last = Math.max(candidates.length, 0)
   const copy = fragments.slice()
   copy.splice(last, 0, frag)
   return copy
