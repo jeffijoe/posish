@@ -90,7 +90,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
     }
   };
 
-  renderFragment = (workspace, theme, fragment) => {
+  renderFragment = (workspace, theme, fragment, depth = 1) => {
     const spanClass = css`
       position: relative;
       padding: 1px;
@@ -115,7 +115,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
         if (idx === 0) {
           result.push(<span key={`${fragment.key}-part0`}>{fragment.parts[0]}</span>)
         }
-        result.push(this.renderFragment(workspace, theme, innerFrag))
+        result.push(this.renderFragment(workspace, theme, innerFrag, depth + 1))
         result.push(<span key={`${fragment.key}-part${idx + 1}`}>{fragment.parts[idx + 1]}</span>)
       })
     }
@@ -136,7 +136,7 @@ export const Highlighter = withTheme(observer(class Highlighter extends React.Co
               height: 16px;
               cursor: pointer;
               background-color: ${theme.id === 'light' ? '#f0f0fe' : '#404049'};
-              z-index: 1;
+              z-index: ${depth};
               border-radius: 50%;
               font-size: 10px;
               display: inline-flex;

@@ -45,7 +45,7 @@ export default function createWorkspaceStore (
   const _removeWorkspace = action((workspace: Workspace) => {
     store.workspaces.remove(workspace)
   })
-  const panes = ['Template', 'Edit', 'Highlight', 'Output']
+  const panes = ['Template', 'Editor', 'Highlighter', 'Output']
   const store = observable({
     selectionProvider: observable.ref(selectionProvider),
     workspaceId: '',

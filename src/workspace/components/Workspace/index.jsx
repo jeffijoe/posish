@@ -82,8 +82,8 @@ const paneViews = {
   Template: ({ workspace }) => (
     <Editor onChange={(value) => workspace.set({ template: value })} value={workspace.template} placeholder="Write a template here" />
   ),
-  Edit: ({ workspace }) => <Editor onChange={(value) => workspace.set({ code: value })} value={workspace.code} placeholder="Write code to highlight here" />,
-  Highlight: ({ workspace, workspaceStore }) => <Highlighter workspace={workspace} workspaceStore={workspaceStore} />,
+  Editor: ({ workspace }) => <Editor onChange={(value) => workspace.set({ code: value })} value={workspace.code} placeholder="Write code to highlight here" />,
+  Highlighter: ({ workspace, workspaceStore }) => <Highlighter workspace={workspace} workspaceStore={workspaceStore} />,
   Output: ({ workspace }) => <Output workspace={workspace} />
 }
 

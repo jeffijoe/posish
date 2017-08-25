@@ -69,12 +69,12 @@ const Toggler = withTheme(styled('a')`
     light: css`
       background-color: ${active ? theme.primaryColor : '#e7e7ef'};
       color: ${active ? '#fff' : theme.textColor};
-      box-shadow: 0 1px 1px rgba(140, 150, 170, 0.3);
+      ${active && css`box-shadow: inset 0 1px 1px rgba(100, 110, 120, 0.3);`};
     `,
     dark: css`
       background-color: ${active ? theme.primaryColor : 'rgba(255, 255, 255, 0.1)'};
       color: ${theme.textColor};
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      ${active && css`box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);`};
     `
   }[theme.id])}
 `)
