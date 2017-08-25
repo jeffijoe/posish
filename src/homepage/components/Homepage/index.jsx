@@ -50,7 +50,7 @@ const Homepage = ({ rootStore }: Props) => {
           Write or paste in some text, highlight areas of interest and generate some code.
           The primary use case for this is writing tests for parsers.
         </p>
-        <p>All data is stored locally using <code>localStorage</code>.</p>
+        <p>All data is stored locally using <code>localStorage</code>, and the app is accessible offline.</p>
         <p>Created by Jeff Hansen - <ContentLink target="_blank" rel="noopener noreferrer" href="https://twitter.com/Jeffijoe">@jeffijoe</ContentLink></p>
       </Content>
       <Button onClick={() => rootStore.workspaceStore.newWorkspace()}>Create from scratch</Button>
