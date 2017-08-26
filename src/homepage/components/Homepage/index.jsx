@@ -43,6 +43,7 @@ export type Props = {
 const Homepage = ({ rootStore }: Props) => {
   return (
     <Container>
+      {/* $FlowFixMe */}
       <Logo src={require(`../../../assets/logo-${rootStore.themeStore.theme.id}.svg`)} />
       <Content>
         <p>

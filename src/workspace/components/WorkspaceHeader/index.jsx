@@ -4,6 +4,7 @@ import { observer } from 'inferno-mobx'
 import type { WorkspaceStore } from '../../workspace-store'
 import { css } from 'emotion'
 import styled from 'emotion/react'
+// $FlowFixMe
 import { lighten, desaturate } from 'polished'
 import { withTheme } from '../../../utils/theming'
 import Button from '../../../components/Button'

@@ -64,8 +64,15 @@ export interface Workspace {
   copyOutput(output: Output): Workspace;
 }
 
+/**
+ * Creates a new workspace model.
+ */
 export default function createWorkspace (attrs: Object, opts?: Object): Workspace {
   let _usedColors = []
+
+  /**
+   * Find the next color to use.
+   */
   const nextColor = () => {
     if (_usedColors.length === COLORS.length) {
       _usedColors = []
@@ -77,18 +84,39 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
   }
 
   const workspace: Workspace = model({
+    /**
+     * Serializes the workspace state to be saved.
+     */
     serialize () {
       return { ...toJS(workspace), usedColors: _usedColors }
     },
+    /**
+     * Deserializes the workspace state to be hydrated.
+     */
     parse ({ usedColors, ...json }) {
       _usedColors = usedColors || []
       return json
     }
   }).extendObservable({
+    /**
+     * Workspace name, for display purposes only.
+     */
     name: 'Untitled',
+    /**
+     * The code to use for highlighting.
+     */
     code: '',
+    /**
+     * Template to render.
+     */
     template: defaultTemplate,
+    /**
+     * Current fragments state.
+     */
     fragments: observable.ref([]),
+    /**
+     * Computed output, runs the template again the fragments.
+     */
     output: computed(() => {
       try {
         return templateUtil.generateOutputs(workspace.code, workspace.fragments, workspace.template)
@@ -97,6 +125,9 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
       }
     })
   }).withActions({
+    /**
+     * Highlights the specified range.
+     */
     highlight (startPos: number, endPos: number) {
       if (startPos === 0 && endPos === 0) {
         return workspace
@@ -104,6 +135,9 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
       workspace.fragments = fragmentUtil.highlight(workspace.fragments, this.code, startPos, endPos, nextColor())
       return workspace
     },
+    /**
+     * Removes the fragment with the specified key.
+     */
     removeHighlight (key: string) {
       workspace.fragments = fragmentUtil.remove(workspace.fragments, workspace.code, key)
       if (workspace.fragments.length === 0) {
@@ -111,15 +145,24 @@ export default function createWorkspace (attrs: Object, opts?: Object): Workspac
       }
       return workspace
     },
+    /**
+     * Removes all fragments and starts from scratch.
+     */
     invalidate () {
       workspace.set({
         fragments: fragmentUtil.codeUpdated(workspace.fragments, workspace.code)
       })
       return workspace
     },
+    /**
+     * Copies the specified output to the clipboard.
+     */
     copyOutput (output: Output) {
       copyTextToClipboard(output.content)
     },
+    /**
+     * Copies all outputs to the clipboard, separated by newlines.
+     */
     copyAll () {
       const outputs = workspace.output
       if (typeof outputs === 'string') {

@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react'
 import { observer } from 'inferno-mobx'
+// $FlowFixMe
 import { darken, lighten, transparentize } from 'polished'
 import { css } from 'emotion'
 import type { RootStore } from '../../root-store'

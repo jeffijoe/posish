@@ -356,11 +356,11 @@ declare module 'mobx' {
 
   declare function extendShallowObservable(target: any): any;
 
-  declare function action(
-    targetOrName: any,
-    propertyKeyOrFuc?: any,
-    descriptor?: PropertyDescriptor,
-  ): any;
+  // declare function action(
+  //   targetOrName: any,
+  //   propertyKeyOrFuc?: any,
+  //   descriptor?: PropertyDescriptor,
+  // ): any;
   declare function action<T>(name: string, func: T): T;
   declare function action<T>(func: T): T;
   declare function runInAction<T>(name: string, block: () => T, scope?: any): T;
@@ -392,10 +392,10 @@ declare module 'mobx' {
   ): any;
 
   declare function computed<T>(
-    target: any,
+    target: () => T,
     key?: string,
     baseDescriptor?: PropertyDescriptor,
-  ): any;
+  ): T;
   declare function createTransformer<A, B>(
     transformer: ITransformer<A, B>,
     onCleanup?: (resultObject: ?B | any, sourceObject?: A) => void,

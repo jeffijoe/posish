@@ -10,13 +10,22 @@ export interface SelectionProvider {
   setContainerNode (node: Element): SelectionProvider;
 }
 
+/**
+ * Creates a selection provider.
+ */
 export default function createOutputSelectionProvider (): SelectionProvider {
   let _node: ?Element = null
   const that: SelectionProvider = {
+    /**
+     * Sets the container node used to get the correct selection.
+     */
     setContainerNode (node: Element) {
       _node = node
       return that
     },
+    /**
+     * Gets the current selection.
+     */
     getSelection () {
       if (!_node) {
         return { start: 0, end: 0 }
@@ -28,6 +37,9 @@ export default function createOutputSelectionProvider (): SelectionProvider {
   return that
 }
 
+/**
+ * Gets the correct selection based on a container element.
+ */
 function getSelectionPos (containerEl: Element): Selection {
   const sel = window.getSelection()
   if (sel.rangeCount === 0) {

@@ -1,16 +1,51 @@
 // @flow
+
+/**
+ * This module contains the guts of the app, the functions for generating
+ * fragments for highlighting.
+ *
+ * All functions are pure, with the exception of `newFrag` which generates a new random ID every time.
+ */
+
 import { v1 } from 'uuid'
 
+/**
+ * Fragment of text.
+ */
 export type Fragment = {
+  /**
+   * Unique ID.
+   */
   key: string;
+  /**
+   * Starting position.
+   */
   startPos: number;
+  /**
+   * End position.
+   */
   endPos: number;
+  /**
+   * The text contained within the fragment.
+   */
   text: string;
+  /**
+   * Parts surrounding inner fragments.
+   */
   parts: Array<string>;
+  /**
+   * Color used for highlighting.
+   */
   color: ?string;
+  /**
+   * Inner fragments.
+   */
   innerFragments: ?Array<Fragment>;
 }
 
+/**
+ * Creates a new fragment.
+ */
 export function newFrag (startPos: number, endPos: number, text: string, color?: ?string): Fragment {
   return {
     key: 'frag-' + v1(),
@@ -23,10 +58,16 @@ export function newFrag (startPos: number, endPos: number, text: string, color?:
   }
 }
 
+/**
+ * Updates the fragments based on a new source.
+ */
 export function codeUpdated (fragments: Array<Fragment>, newSource: string): Array<Fragment> {
   return addFragment([], newSource, 0, newSource.length, null)
 }
 
+/**
+ * Adds a highlight fragment at the specified position.
+ */
 export function highlight (
   fragments: Array<Fragment>,
   source: string,
@@ -62,6 +103,9 @@ export function highlight (
   return addFragment(fragments, source, startPos, endPos, color)
 }
 
+/**
+ * Removes the fragment at the specified position.
+ */
 export function remove (fragments: Array<Fragment>, source: string, key: string): Array<Fragment> {
   const index = fragments.findIndex(f => f.key === key)
   if (index > -1) {
@@ -90,6 +134,9 @@ export function remove (fragments: Array<Fragment>, source: string, key: string)
   })
 }
 
+/**
+ * Calculates the new `parts` for a fragment based on inner fragments.
+ */
 function updateParts (
   innerFragments: Array<Fragment>,
   source: string,
@@ -114,6 +161,9 @@ function updateParts (
   return parts
 }
 
+/**
+ * Finds a fragment based on start and end position.
+ */
 function findFragment (fragments: ?Array<Fragment>, startPos: number, endPos: number): ?Fragment {
   if (!fragments) {
     return null
@@ -137,6 +187,9 @@ function findFragment (fragments: ?Array<Fragment>, startPos: number, endPos: nu
   return frag
 }
 
+/**
+ * Adds a new fragment.
+ */
 function addFragment (
   fragments: ?Array<Fragment>,
   source: string,
@@ -185,6 +238,9 @@ function addFragment (
   return copy
 }
 
+/**
+ * Updates a fragment.
+ */
 function updateFragment (fragments: Array<Fragment>, key: string, updated: Fragment): Array<Fragment> {
   const idx = fragments.findIndex(f => f.key === key)
   if (idx > -1) {

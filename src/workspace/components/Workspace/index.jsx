@@ -94,6 +94,7 @@ const Workspace = ({ workspaceStore }: Props) => {
   return (
     <WorkspaceLayout>
       <WorkspaceLayoutItem>
+        {/* $FlowFixMe */}
         <WorkspaceHeader workspaceStore={workspaceStore}/>
       </WorkspaceLayoutItem>
       <WorkspaceLayoutItem fill>
