@@ -1,10 +1,10 @@
 // @flow
-import styled from 'emotion/react'
-import { css } from 'emotion'
-import type { Theme } from '../../models/Theme'
-import { withTheme } from '../../utils/theming'
-import type { Props as LinkProps } from '../Link'
-import Link from '../Link'
+import styled from "react-emotion";
+import { css } from "emotion";
+import type { Theme } from "../../models/Theme";
+import { withTheme } from "../../utils/theming";
+import type { Props as LinkProps } from "../Link";
+import Link from "../Link";
 
 const buttonBase = css`
   display: inline-flex;
@@ -19,7 +19,7 @@ const buttonBase = css`
   line-height: 0;
   text-decoration: none;
   cursor: pointer;
-`
+`;
 
 const themes = {
   light: css`
@@ -30,22 +30,24 @@ const themes = {
     box-shadow: 0 1px 2px rgba(50, 60, 70, 0.2);
     color: #fff;
   `
-}
+};
 
 type Props = LinkProps & {
-  theme: Theme;
-  small: boolean;
-}
+  theme: Theme,
+  small: boolean
+};
 
 const Button = withTheme(styled(Link)`
   ${buttonBase};
   ${(p: Props) => themes[p.theme.id] || themes.light};
-  ${(p: Props) => p.small && css`
-    font-size: 10px;
-    height: 28px;
-    padding: 0 16px;
-  `};
+  ${(p: Props) =>
+    p.small &&
+    css`
+      font-size: 10px;
+      height: 28px;
+      padding: 0 16px;
+    `};
   background-color: ${(p: Props) => p.theme.primaryColor};
-`)
+`);
 
-export default Button
+export default Button;
